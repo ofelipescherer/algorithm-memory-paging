@@ -103,7 +103,7 @@ in_process = True
 
 - Do a git clone
 
-      git clone https://github.com/ofelipescherer/python-memory-paging.git
+      git clone https://github.com/ofelipescherer/algorithm-memory-paging.git
 
 - After you can run `paging.py`
 
@@ -114,5 +114,5 @@ in_process = True
 
 - The project is [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 - You can fork and use as you want
-- I would appreciate if you put my name and the link to this repository if you use the project
+- I would appreciate if you put my name and the link to this repository
 
