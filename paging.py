@@ -1,72 +1,72 @@
 # 1º VRAM is populated with random number of process (3-5)
 # 2º Page mapping is generated based on VRAM size
 
-from random import randint, choice
+from random import randint
 
 def start_paging(vram, ram):
   number_of_process = randint(1,3)
-  for process_id in range(number_of_process): #Populando VRAM
-    process = [] #lista do processo atual
+  for process_id in range(number_of_process): #VRAM is populated
+    process = [] #List of curently processes
     pages = randint(1,5)
-    print(f'Processo {process_id} com {pages} páginas adicionado a memória virtual')
+    print(f'Process {process_id} with {pages} pages added to virtual RAM')
     for page in range(pages):
-      size = randint(1,3) #tamanho da página (por quantos loops vai ter que rodar, antes de ser concluido)
+      size = randint(1,3) #Page's quantum (How many cycles to end process)
       process.append([process_id , page, size])
-      print(f' Processo: {process_id}; Página: {page}; Tamanho: {size}')
+      print(f' Process: {process_id}; Page: {page}; Quantum: {size}')
     vram.append(process)
   
-  print('\nVirtual RAM ( 1º = id; 2º = nº de página; 3º = tamanho)')
+  print('\nVirtual RAM ( 1º = id; 2º = page number; 3º = quantum)')
   for i in vram:
     print(i)
 
-  print(f'\nMapeamento das páginas:')
+  print(f'\nPage Maping')
   for index, value in enumerate(vram):
     mapping = []
     for process in value:
-      #Essa variavel representa a quantidade de possiveis lugares para alocar paginas, ou seja, os frames
-      #Como os primeiros espaços da RAM estão destinados ao mapeamento das paginas, os frames não devem começar no incio da lista
+      #This variable represents where the page needs to go in RAM frame
+      #As the first spaces in RAM are intended for page mapping, frames should not start at the top of the list.
       frame_number = randint(number_of_process+1, len(ram)-1)
-      mapping.append([process[1], frame_number]) #Mapeando o page number com o frame number
-      print(f'Processo {index} página {process[1]} mapeado em frame {frame_number}')
+      mapping.append([process[1], frame_number]) #Maping page number with frame number
+      print(f'Process {index} page {process[1]} maped in {frame_number} frame')
     ram[index] = mapping
 
-  print('\nMapeamento (1º = nº da página; 2º = nº do frame):')
+  print('\nMaping( 1º page number; 2º frame number):')
   for i, v in enumerate(vram):
-    print(f'Processo {i}: {ram[i]}')
+    print(f'Process {i}: {ram[i]}')
 
-  print('\nRAM (-1 significa espaço livre):')
+  print('\nRAM (-1 means a free space):')
   print(f'{ram}\n')
     
-  #Processando TUDO
+  #Processing
   print('-'*150)
-  print('\nPROCESSANDO')
+  print('\nProcessing')
   in_process = True
   while(in_process):
     for process_index, process in enumerate(vram):
       for page_index, page in enumerate(process):
-        if(page[2]!=0): #Se entrar significa que precisa ser processado
+        if(page[2]!=0): #If enters means it needs to be processed.
           mapping = ram[process_index][page_index]
-          if(ram[mapping[1]]==-1): #Se entrar significa que o espaço está vago
-            print(f'Alocando processo {page[0]}, página {page[1]} em posição {mapping[1]}')
+          if(ram[mapping[1]]==-1): #If enters means the space is free
+            print(f'Allocating Process {page[0]}, page {page[1]} quantum: {mapping[1]}')
             ram[mapping[1]] = page
             print(f'RAM: {ram}\n')
 
-    print('DIMINUINDO 1 NO TAMANHO\n')
-    #Agora subtrairemos 1 da propriedade size, simbolizando que foi processado
+    print('DECREASE 1 IN QUANTUM\n')
+    #Now we will subtract 1 from the size property, symbolizing that it has been processed.
     for i in range(number_of_process, len(ram)):
       if(ram[i]!=-1):
         page = ram[i]
-        page[2] = page[2] - 1 #Processado na RAM
-        if(page[2]<=0): #Acabou o processamento, libere o espaço
-          print(f'removeu o processo {page[0]}, página {page[1]} da posição {ram.index(ram[i])} pois terminou seu processamento')
+        page[2] = page[2] - 1 #Processed in RAM
+        if(page[2]<=0): #Finished processing, free up space
+          print(f'Process {page[0]}, page {page[1]} quantum {ram.index(ram[i])} was removed because it finished')
           ram[i] = -1
           print(f'RAM: {ram}\n')
-    print(f'RAM depois da diminuição: {ram}\n')
+    print(f'RAM after decrease: {ram}\n')
 
     has_process = False
     for i in vram:
       for j in i:
-        if(j[2]!=0): #Se o tamanho de qualquer processo for diferente de 0, significa que ainda há processamento
+        if(j[2]!=0): #If the quantum of any Process is different from 0, it means that there is still processing
           has_process = True
     
     if(not has_process):
@@ -74,12 +74,12 @@ def start_paging(vram, ram):
 
 
 vram =[]
-ram = [-1] * 10 #RAM tem um espaço finito, neste caso, definimos 10 posições
+ram = [-1] * 10 #RAM has a finite space, in this case we define 10 positions
 start_paging(vram, ram)
 
 print('-'*150)
-print('Estados finais: ')
+print('End states: ')
 print(f'RAM: {ram}')
 print(f'VRAM: {vram}')
 
-input("\nAperte enter para finalizar...")
+input("\nPress enter to finish...")
