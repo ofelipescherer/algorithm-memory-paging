@@ -6,7 +6,10 @@
 <img alt="APM" src="https://img.shields.io/apm/l/vim-mode">
 </a>
 </div>      
-      
+    
+    MELHORIAS
+    
+    
 # Introduction 💡
 Memory management in operating systems is one of the big concerns when we're trying to make a system efficient. Paging is a technique that consists of using secondary memory in favor of primary memory.
 
