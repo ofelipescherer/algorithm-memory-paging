@@ -73,9 +73,9 @@ vram = []
 mapping = []
 options = {
   "minProcess": 1,
-  "maxProcess": 3,
+  "maxProcess": 5,
   "minPages": 1,
-  "maxPages": 3,
+  "maxPages": 5,
   "quantum_cycles": 50,
 }
 
