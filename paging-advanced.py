@@ -2,25 +2,24 @@
 from random import randint
 
 def createProcess(process_id, options):
-  print('\nCriando processos')
-  process = [] #lista do processo atual
+  print('\nCreating Process')
+  process = [] #Process List
   pages = randint(options.get("minProcess"),options.get("maxProcess"))
   for page in range(pages):
-    quantum = randint(options.get("minPages"),options.get("maxPages")) #quantum da página (por quantos loops vai ter que rodar, antes de ser concluido)
+    quantum = randint(options.get("minPages"),options.get("maxPages")) #Page quantum (How many cycles will do)
     process.append([process_id , page, quantum])
-    print(f' Processo: {process_id}; Página: {page}; Quantum: {quantum} adicionado a VRAM')
+    print(f' Process: {process_id}; Page: {page}; Quantum: {quantum} add into VRAM')
   return process
 
 def createMap(process_list, quantity_ram):
-  print(f'\nMapeamento das páginas:')
+  print(f"\Maping's pages:")
   process_mapping = []
 
   for value in (process_list):
-    #Essa variavel representa a quantidade de possiveis lugares para alocar paginas, ou seja, os frames
-    #Como os primeiros espaços da RAM estão destinados ao mapeamento das paginas, os frames não devem começar no incio da lista
+    #Memory frames
     frame_number = randint(0, quantity_ram-1)
-    process_mapping.append([value[0], value[1], frame_number]) #Mapeando o page number com o frame number
-    print(f' Processo {value[0]} página {value[1]} mapeado em frame {frame_number}')
+    process_mapping.append([value[0], value[1], frame_number]) #Maping frame number with page number
+    print(f' Process {value[0]} page {value[1]} mapped in frame {frame_number}')
   return process_mapping
 
 
@@ -28,44 +27,44 @@ def init(ram, vram, mapping, options):
   quantum_cycle = 0
   while quantum_cycle <= options.get("quantum_cycles"):
 
-    # tentar remover
-    #Agora subtrairemos 1 da propriedade quantum, simbolizando que foi processado
+    #try removing process
+    #Now we are going to try to decrease one of page quantum in memory
     for i in range(len(ram)):
       if(ram[i]!=-1):
         aux_page = ram[i]
-        aux_page[2] = aux_page[2] - 1 #Processado na RAM
-        print(f'Diminuindo 1 no quantum do processo {aux_page[0]} página {aux_page[1]} faltando mais {aux_page[2]} quantum')
-        if(aux_page[2]<=0): #Acabou o processamento, libere o espaço
-          print(f'\nremoveu o processo {aux_page[0]}, página {aux_page[1]} da posição {ram.index(ram[i])} pois terminou seu processamento')
+        aux_page[2] = aux_page[2] - 1 #Processed in RAM
+        print(f"Decreasing 1 in quantum's page {aux_page[0]} page {aux_page[1]} missing {aux_page[2]} quantum")
+        if(aux_page[2]<=0): #Processing is finished, free this space
+          print(f'\nProcess {aux_page[0]}, page {aux_page[1]} position {ram.index(ram[i])} removed because processing is over')
           ram[i] = -1
           print(f'RAM: {ram}\n')
 
-    # tentar criar processo
+    #try create process
     if(randint(1,5) == 1):
       new_process = createProcess(len(vram), options)
       vram.append(new_process)
 
       mapping.append(createMap(new_process, len(ram)))
-      print('Mapeamento:',mapping)
+      print('Mapping:',mapping)
 
-    # tentar alocar
+    #try allocate process
     for process_index, process in enumerate(vram):
       for page_index, page in enumerate(process):
-        if(page[2]!=0): #Precisa tentar alocar
-          #Vendo no mapeamento qual é o frame em que deverá ser alocado e se ele está disponível
+        if(page[2]!=0): #If quantum is not 0, try to allocate
+          #Now we search for the frame number in maping list
           mapped_in = mapping[page[0]][page[1]]
 
-          #Verificando se o frame reservado está livre
+          #Verifing if this frame is free
           if(ram[mapped_in[2]]==-1):
-            #Fazendo a alocação
-            print(f'\nAlocando processo {page[0]}, página {page[1]} em posição {mapped_in[2]}')
+            #Doing the allocation
+            print(f'\nAllocation process {page[0]}, page {page[1]} in position {mapped_in[2]}')
             ram[mapped_in[2]] = page
             print(f'RAM: {ram}\n')
               
 
-    print(f'RAM no fim do ciclo {quantum_cycle}: {ram}\n')        
-    print(f'-------------------------------FIM D0 CICLO {quantum_cycle}-------------------------------')
-    quantum_cycle += 1 #Termina um clico
+    print(f'RAM at end of cycle {quantum_cycle}: {ram}\n')        
+    print(f'-------------------------------End Cycle {quantum_cycle}-------------------------------\n')
+    quantum_cycle += 1 #finish one cycle
 
 
 
@@ -82,14 +81,14 @@ options = {
 
 init(ram, vram, mapping, options)
 
-print('\n-------------------------------ESTADOS FINAIS-------------------------------\n')
-print('RAM (-1 significa espaço livre; qualquer outra coisa significa um processo não terminado):')
+print('\n-------------------------------Final States-------------------------------\n')
+print('RAM (-1 means a free space; anything else is a process):')
 print(ram)
 
-print('\nVRAM (Legenda: [[[id de processo; id da página; quantum]]])')
+print("\nVRAM (Subtitle: [[[process's id; page's id; quantum]]])")
 print(vram)
 
-print('\nMapeamento (Legenda: [[[id de processo; id da página; nº de frame na memória]]])')
+print("\Mapping (Subtitle: [[[process's id; page's id; frame's number]]])")
 print(mapping)
 
-input("\nAperte enter para finalizar...")
+input("\nPress enter to finish...")
